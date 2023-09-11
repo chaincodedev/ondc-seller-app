@@ -1,15 +1,15 @@
 [submodule "seller-app"]
     path = seller-app
-    url = https://github.com/ONDC-Official/seller-app.git
+    url = https://github.com/chaincodedev/seller-app.git
 [submodule "seller-app-protocol"]
     path = seller-app-protocol
-    url = https://github.com/ONDC-Official/seller-app-protocol.git
+    url = https://github.com/chaincodedev/seller-app-protocol.git
 [submodule "seller-app-frontend"]
     path = seller-app-frontend
-    url = https://github.com/ONDC-Official/seller-app-frontend.git
+    url = https://github.com/chaincodedev/seller-app-frontend.git
 [submodule "seller-app-igm"]
 	path = seller-app-igm
-	url = https://github.com/ONDC-Official/seller-app-igm.git
+	url = https://github.com/chaincodedev/seller-app-igm.git
 [submodule "seller-bugzilla-service"]
 	path = seller-bugzilla-service
-	url = https://github.com/ONDC-Official/seller-bugzilla-service.git
+	url = https://github.com/chaincodedev/seller-bugzilla-service.git
