@@ -19,50 +19,50 @@
   tasks:
     - name: Clone seller-app
       git:
-        repo: "https://github.com/ONDC-Official/seller-app.git"
-        dest: "/home/ubuntu/seller-app"
+        repo: "https://github.com/chaincodedev/seller-app.git"
+        dest: "/home/ubuntu/seller/seller-app"
         version: "master"
         force: yes
 
     - name: Clone seller-app-protocol
       git:
-        repo: "https://github.com/ONDC-Official/seller-app-protocol.git"
-        dest: "/home/ubuntu/seller-app-protocol"
+        repo: "https://github.com/chaincodedev/seller-app-protocol.git"
+        dest: "/home/ubuntu/seller/seller-app-protocol"
         version: "master"
         force: yes
 
     - name: Clone seller-app-frontend
       git:
-        repo: "https://github.com/ONDC-Official/seller-app-frontend.git"
-        dest: "/home/ubuntu/seller-app-frontend"
+        repo: "https://github.com/chaincodedev/seller-app-frontend.git"
+        dest: "/home/ubuntu/seller/seller-app-frontend"
         version: "master"
         force: yes
 
     - name: Clone seller-app-igm
       git:
-        repo: "https://github.com/ONDC-Official/seller-app-igm.git"
-        dest: "/home/ubuntu/seller-app-igm"
+        repo: "https://github.com/chaincodedev/seller-app-igm.git"
+        dest: "/home/ubuntu/seller/seller-app-igm"
         version: "master"
         force: yes
 
     - name: Clone seller-bugzilla-service
       git:
-        repo: "https://github.com/ONDC-Official/seller-bugzilla-service.git"
-        dest: "/home/ubuntu/seller-bugzilla-service"
+        repo: "https://github.com/chaincodedev/seller-bugzilla-service.git"
+        dest: "/home/ubuntu/seller/seller-bugzilla-service"
         version: "master"
         force: yes
 
     - name: Copy lets encrypt with domain replaced
       copy:
         src: "{{ playbook_dir }}/../init-letsencrypt.sh"
-        dest: "/home/ubuntu/init-letsencrypt.sh"
+        dest: "/home/ubuntu/seller/init-letsencrypt.sh"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with domain name
       replace:
-        path: "/home/ubuntu/init-letsencrypt.sh"
+        path: "/home/ubuntu/seller/init-letsencrypt.sh"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
@@ -70,35 +70,35 @@
     - name: copy Dockerfile without SSL as dockerfile in seller-app-frontend
       copy:
         src: "{{ playbook_dir }}/../seller-app-frontend/DockerfileWithoutSSL"
-        dest: "/home/ubuntu/seller-app-frontend/Dockerfile"
+        dest: "/home/ubuntu/seller/seller-app-frontend/Dockerfile"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with in nginx.conf
       replace:
-        path: "/home/ubuntu/seller-app-frontend/nginx-without-ssl.conf"
+        path: "/home/ubuntu/seller/seller-app-frontend/nginx-without-ssl.conf"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
     - name: copy env file with domain replaced
       copy:
         src: "{{ playbook_dir }}/../.env{{ envtype }}"
-        dest: "/home/ubuntu/.env"
+        dest: "/home/ubuntu/seller/.env"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
 
     - name: replace __domain__ with domain name
       replace:
-        path: "/home/ubuntu/.env"
+        path: "/home/ubuntu/seller/.env"
         regexp: "__domain_name__"
         replace: "{{ domain }}"
 
     - name: Copy docker-compose file with domain replaced
       copy:
         src: "{{ playbook_dir }}/../docker-compose-without-ssl.yaml"
-        dest: "/home/ubuntu/docker-compose.yml"
+        dest: "/home/ubuntu/seller/docker-compose.yml"
         owner: "ubuntu"
         group: "ubuntu"
         mode: "0755"
@@ -107,7 +107,7 @@
     - name: give permissions for rabbitmq data
       become: yes
       file:
-        path: "/home/ubuntu/.docker-conf/rabbitmq/data/"
+        path: "/home/ubuntu/seller/.docker-conf/rabbitmq/data/"
         state: directory
         owner: ubuntu
         group: ubuntu
@@ -116,25 +116,25 @@
     - name: give permissions for rabbitmq log
       become: yes
       file:
-        path: "/home/ubuntu/.docker-conf/rabbitmq/log/"
+        path: "/home/ubuntu/seller/.docker-conf/rabbitmq/log/"
         state: directory
         owner: ubuntu
         group: ubuntu
         mode: 0755
 
     - name: docker compose up postgres
-      shell: "cd /home/ubuntu/ && sudo docker-compose up -d postgres"
+      shell: "cd /home/ubuntu/seller/ && sudo docker-compose up -d postgres"
 
-    - name: docker compose postgres create db, user and password via psql and grant all privileges to schema public
-      shell: "cd /home/ubuntu/ && sudo docker-compose exec postgres psql -U postgres -c \"CREATE DATABASE  bpp_protocol;\" && sudo docker-compose exec postgres psql -U postgres -c \"CREATE USER  bpp_protocol WITH PASSWORD 'bpp_protocol';\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE bpp_protocol TO bpp_protocol;\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON SCHEMA public TO bpp_protocol;\""
-      ignore_errors: yes
+    # - name: docker compose postgres create db, user and password via psql and grant all privileges to schema public
+    #   shell: "cd /home/ubuntu/ && sudo docker-compose exec postgres psql -U postgres -c \"CREATE DATABASE  bpp_protocol;\" && sudo docker-compose exec postgres psql -U postgres -c \"CREATE USER  bpp_protocol WITH PASSWORD 'bpp_protocol';\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE bpp_protocol TO bpp_protocol;\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON SCHEMA public TO bpp_protocol;\""
+    #   ignore_errors: yes
 
-    - name: docker compose postgres create db, user and password via psql and grant all privileges to schema public
-      shell: "cd /home/ubuntu/ && sudo docker-compose exec postgres psql -U postgres -c \"CREATE DATABASE  seller_client;\" && sudo docker-compose exec postgres psql -U postgres -c \"CREATE USER  bpp_client WITH PASSWORD 'bpp_client';\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE seller_client TO bpp_client;\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON SCHEMA public TO bpp_client;\""
-      ignore_errors: yes
+    # - name: docker compose postgres create db, user and password via psql and grant all privileges to schema public
+    #   shell: "cd /home/ubuntu/ && sudo docker-compose exec postgres psql -U postgres -c \"CREATE DATABASE  seller_client;\" && sudo docker-compose exec postgres psql -U postgres -c \"CREATE USER  bpp_client WITH PASSWORD 'bpp_client';\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE seller_client TO bpp_client;\" && sudo docker-compose exec postgres psql -U postgres -c \"GRANT ALL PRIVILEGES ON SCHEMA public TO bpp_client;\""
+    #   ignore_errors: yes
 
-    - name: Run docker compose up
-      shell: "cd /home/ubuntu/ && sudo docker-compose build && sudo docker-compose up -d"
+    # - name: Run docker compose up
+    #   shell: "cd /home/ubuntu/seller/ && sudo docker-compose build && sudo docker-compose up -d"
 
-    - name: run letsencrypt
-      shell: "cd /home/ubuntu/ && sudo ./init-letsencrypt.sh"
+    # - name: run letsencrypt
+    #   shell: "cd /home/ubuntu/seller/ && sudo ./init-letsencrypt.sh"
